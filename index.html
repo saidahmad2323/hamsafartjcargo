@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хамсафар — Форма заказа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            padding-bottom: 100px; /* Добавлен отступ снизу */
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], select, textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        footer a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Хамсафар</h1>
+    <p>Ваш надежный партнер по доставке междугородных грузов</p>
+</header>
+
+<main>
+    <h2>Заполните форму для оформления заказа</h2>
+    <form id="orderForm" onsubmit="submitOrder(event)">
+
+        <label for="pointA">Точка А:</label>
+        <select id="pointA" name="pointA" required>
+            <option value="Hujand">Худжанд</option>
+            <option value="Dushanbe">Душанбе</option>
+        </select>
+
+        <label for="pointB">Точка Б:</label>
+        <select id="pointB" name="pointB" required>
+            <option value="Hujand">Худжанд</option>
+            <option value="Dushanbe">Душанбе</option>
+        </select>
+
+        <label for="productName">Название товара:</label>
+        <input type="text" id="productName" name="productName" required placeholder="Введите название товара">
+
+        <label for="volumeType">Тип объема товара:</label>
+        <select id="volumeType" name="volumeType" required>
+            <option value="kg">Килограммы (кг)</option>
+            <option value="m3">Кубические метры (м³)</option>
+            <option value="pcs">Штуки (шт)</option>
+        </select>
+
+        <label for="volume">Объем товара:</label>
+        <input type="text" id="volume" name="volume" required>
+
+        <label for="phoneUser">Телефон:</label>
+        <input type="text" id="phoneUser" name="phoneUser" required>
+
+        <!-- Поле для дополнительной информации -->
+        <label for="additionalInfo">Дополнительная информация:</label>
+        <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Укажите дополнительные пожелания или информацию по заказу"></textarea>
+
+        <input type="submit" value="Отправить заказ">
+        <p>Наш оператор свяжется с вами для уточнения адреса и расчета стоимости доставки.</p>  
+    </form>
+</main>
+
+<footer>
+    <p>Лицензия: ООО "Хамсафар" 2024</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script>
+    // TODO: Добавьте вашу конфигурацию Firebase
+    var firebaseConfig = {
+        apiKey: "AIzaSyBq3mFtT01VepSK-JMonMQhP9nRQXOp0ro",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "recipeapp-7e2db",
+        storageBucket: "recipeapp-7e2db.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    function submitOrder(event) {
+        event.preventDefault();
+
+        var productName = document.getElementById("productName").value;
+        var pointA = document.getElementById("pointA").value;
+        var pointB = document.getElementById("pointB").value;
+        var volumeType = document.getElementById("volumeType").value;
+        var volume = document.getElementById("volume").value;
+        var phoneUser = document.getElementById("phoneUser").value;
+        var additionalInfo = document.getElementById("additionalInfo").value;
+
+        // Сохранение заказа в Firebase
+        db.collection("orders").add({
+            productName: productName,
+            pointA: pointA,
+            pointB: pointB,
+            volumeType: volumeType,
+            volume: volume,
+            phoneUser: phoneUser,
+            additionalInfo: additionalInfo
+        })
+        .then(function() {
+            alert("Заказ успешно отправлен!");
+            document.getElementById("orderForm").reset();
+        })
+        .catch(function(error) {
+            alert("Ошибка при отправке заказа: " + error.message);
+        });
+    }
+</script>
+
+</body>
+</html>
